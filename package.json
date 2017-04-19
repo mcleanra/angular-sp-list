@@ -1,0 +1,30 @@
+{
+  "name": "angular-sp-list",
+  "version": "1.0.0",
+  "description": "An AngularJS module that abstracts CRUD operations for lists in Sharepoint 2013",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcleanra/angular-sp-list.git"
+  },
+  "author": "Ryan McLean",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcleanra/angular-sp-list/issues"
+  },
+  "homepage": "https://github.com/mcleanra/angular-sp-list#readme",
+  "devDependencies": {
+    "gulp": "~3.9.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^2.1.2"
+  },
+  "unpkg": "dist/angular-sp-list.min.js",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+
+  }
+}

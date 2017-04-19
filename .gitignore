@@ -1,0 +1,5 @@
+gulp.1
+build
+.tmp
+/bower_components
+/node_modules

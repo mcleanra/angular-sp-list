@@ -1,0 +1,25 @@
+{
+  "name": "angular-sp-list",
+  "description": "An AngularJS module that abstracts CRUD operations for lists in Sharepoint 2013",
+  "main": [
+    "dist/angular-sp-list.js"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "authors": [
+    "Ryan McLean"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/mcleanra/angular-sp-list",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+
+  }
+}
