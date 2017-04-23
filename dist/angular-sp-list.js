@@ -273,7 +273,7 @@ angular.module('angular.sp.list')
 
 				var requestHeaders = {
 					"accept": "application/json;odata=verbose",
-					"X-RequestDigest": $("#__REQUESTDIGEST").val(),
+					"X-RequestDigest": window.__REQUESTDIGEST[spListItem.prototype.siteUrl],
 					"content-type": "application/json;odata=verbose", 
 					"If-Match": "*",
 					"X-HTTP-Method": "POST"
@@ -304,7 +304,7 @@ angular.module('angular.sp.list')
 
 				var requestHeaders = {
 					"accept": "application/json;odata=verbose",
-					"X-RequestDigest": $("#__REQUESTDIGEST").val(),
+					"X-RequestDigest": window.__REQUESTDIGEST[spListItem.prototype.siteUrl],
 					"content-type": "application/json;odata=verbose", 
 					"If-Match": "*",
 					"X-HTTP-Method": "MERGE"
@@ -333,7 +333,7 @@ angular.module('angular.sp.list')
 
 				var requestHeaders = {
 					"accept": "application/json;odata=verbose",
-					"X-RequestDigest": $("#__REQUESTDIGEST").val(),
+					"X-RequestDigest": window.__REQUESTDIGEST[spListItem.prototype.siteUrl],
 					"content-type": "application/json;odata=verbose", 
 					"If-Match": "*",
 					"X-HTTP-Method": "DELETE"
