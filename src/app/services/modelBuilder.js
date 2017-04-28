@@ -3,7 +3,7 @@
 	'use strict';
 
 	angular.module('angular.sp.list')
-		.factory('modelBuilderService', [function () {
+		.factory('modelBuilderService', ['_', function (_) {
 
 			function _buildFromRestResponse(ctor, result, spServicesJsonMapping) {
 				var json = {};

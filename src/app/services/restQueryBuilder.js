@@ -3,7 +3,7 @@
 	'use strict';
 
 	angular.module('angular.sp.list')
-		.factory('restQueryBuilderService', [function () {
+		.factory('restQueryBuilderService', ['_', function (_) {
 
 			//walks down the object and returns a list of comma separated fields for the $select parameter
 			function _getSelectFields(spServicesJsonMapping, expandAll) {
