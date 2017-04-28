@@ -5,11 +5,15 @@
 	'use strict';
 
 	angular.module('angular.sp.list')
-		.factory('spListService', ['$http', '$q', '_',
-			function ($http, $q, _) {
+		.factory('spListService', ['$http', '$q', '_', 'RequestDigestIntervalService', 'RequestDigestCacheService',
+			function ($http, $q, _, RequestDigestIntervalService, RequestDigestCacheService) {
 
 				function spListService(spListItem) {
+
 					this.spListItem = spListItem;
+
+					//start maintaining a request digest for this site in case they have to post
+					RequestDigestIntervalService.start(spListItem.prototype.siteUrl);
 
 					this.getByFilter = function (filter, select) {
 						return this.executeRestQuery(null, select, filter, null);
@@ -42,7 +46,7 @@
 
 						var requestHeaders = {
 							"accept": "application/json;odata=verbose",
-							"X-RequestDigest": window.__REQUESTDIGEST[spListItem.prototype.siteUrl],
+							"X-RequestDigest": RequestDigestCacheService.get(spListItem.prototype.siteUrl),
 							"content-type": "application/json;odata=verbose",
 							"If-Match": "*",
 							"X-HTTP-Method": "POST"
@@ -73,7 +77,7 @@
 
 						var requestHeaders = {
 							"accept": "application/json;odata=verbose",
-							"X-RequestDigest": window.__REQUESTDIGEST[spListItem.prototype.siteUrl],
+							"X-RequestDigest": RequestDigestCacheService.get(spListItem.prototype.siteUrl),
 							"content-type": "application/json;odata=verbose",
 							"If-Match": "*",
 							"X-HTTP-Method": "MERGE"
@@ -102,7 +106,7 @@
 
 						var requestHeaders = {
 							"accept": "application/json;odata=verbose",
-							"X-RequestDigest": window.__REQUESTDIGEST[spListItem.prototype.siteUrl],
+							"X-RequestDigest": RequestDigestCacheService.get(spListItem.prototype.siteUrl),
 							"content-type": "application/json;odata=verbose",
 							"If-Match": "*",
 							"X-HTTP-Method": "DELETE"
