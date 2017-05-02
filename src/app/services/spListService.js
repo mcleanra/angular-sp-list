@@ -16,8 +16,10 @@
 					RequestDigestIntervalService.start(spListItem.prototype.siteUrl);
 
 					this.getByFilter = function (filter, options) {
-						options = options || {};
-						options.$filter = filter;
+						var params = {
+							$filter: filter
+						};
+						options = angular.extend({}, options, params);
 						return this.executeRestQuery(options);
 					};
 
@@ -173,11 +175,7 @@
 					this.executeRestQuery = function (options) {
 						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists/GetByTitle('" + spListItem.prototype.listName + "')/Items";
 
-						var params = {
-							$top: 100000
-						};
-
-						params = angular.extend({}, params, options);
+						var params = angular.extend({}, options);
 
 						return $http({
 							method: 'GET',
@@ -186,7 +184,14 @@
 								"accept": "application/json;odata=verbose",
 								"content-Type": "application/json;odata=verbose"
 							},
-							params: params
+							params: {
+								'$select': params.$select,
+								'$filter': params.$filter,
+								'$skip': params.$skip,
+								'$top': params.$top,
+								'$expand': params.$expand,
+								'$orderby': parmas.$orderby
+							}
 						})
 							.then(function (response) {
 								var results = [];
