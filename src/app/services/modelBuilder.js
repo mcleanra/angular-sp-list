@@ -13,7 +13,7 @@
 					var mapping = spServicesJsonMapping['ows_' + key];
 
 					if (result[key] && mapping) {
-						if (mapping.objectType == "MultiChoice" || mapping.objectType == "LookupMulti" || mapping.objectType == "UserMulti") {
+						if (mapping.objectType == "Lookup" || mapping.objectType == "MultiChoice" || mapping.objectType == "LookupMulti" || mapping.objectType == "UserMulti") {
 							//this is a multi lookup field, so move the values up
 							if (result[key].results) {
 								json[mapping.mappedName] = result[key].results;
