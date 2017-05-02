@@ -15,14 +15,16 @@
 					//start maintaining a request digest for this site in case they have to post
 					RequestDigestIntervalService.start(spListItem.prototype.siteUrl);
 
-					this.getByFilter = function (filter, select) {
-						return this.executeRestQuery(null, select, filter, null);
+					this.getByFilter = function (filter, options) {
+						options = options || {};
+						options.$filter = filter;
+						return this.executeRestQuery(options);
 					};
 
 					this.getByFilters = this.getByFilter;
 
-					this.get = function () {
-						return this.executeRestQuery(null, null, null, null);
+					this.get = function (options) {
+						return this.executeRestQuery(options);
 					};
 
 					this.getById = function (id) {
@@ -168,8 +170,14 @@
 
 					};
 
-					this.executeRestQuery = function (top, select, filter, expand) {
+					this.executeRestQuery = function (options) {
 						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists/GetByTitle('" + spListItem.prototype.listName + "')/Items";
+
+						var params = {
+							$top: 100000
+						};
+
+						params = angular.extend({}, params, options);
 
 						return $http({
 							method: 'GET',
@@ -178,12 +186,7 @@
 								"accept": "application/json;odata=verbose",
 								"content-Type": "application/json;odata=verbose"
 							},
-							params: {
-								'$top': top || 100000,
-								'$select': select,
-								'$filter': filter,
-								'$expand': expand
-							}
+							params: params
 						})
 							.then(function (response) {
 								var results = [];
