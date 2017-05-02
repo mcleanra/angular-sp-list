@@ -190,7 +190,7 @@
 								'$skip': params.$skip,
 								'$top': params.$top,
 								'$expand': params.$expand,
-								'$orderby': parmas.$orderby
+								'$orderby': params.$orderby
 							}
 						})
 							.then(function (response) {
