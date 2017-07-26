@@ -201,6 +201,36 @@
 
 					};
 
+					this.executeCamlQueryViaRest = function( query ) {
+						return $http({
+							url: spListItem.prototype.siteUrl + "/_api/Web/lists/getbytitle('" + spListItem.prototype.listName + "')/getitems",
+							method: "POST",
+							headers: {
+								"Accept": "application/json; odata=verbose",
+								"Content-Type": "application/json; odata=verbose",
+								"X-RequestDigest": RequestDigestCacheService.get(spListItem.prototype.siteUrl)
+							},
+							data: {
+								"query": {
+									"__metadata": {
+										"type": "SP.CamlQuery"
+									},
+									"ViewXml": "<View>" + query + "</View>"
+								}
+							}
+						})
+						.then(function (response) {
+							var results = [];
+
+							if (response.data.d && response.data.d.results) {
+								_.each(response.data.d.results, function (item, index) {
+									results.push(spListItem.prototype.buildFromJson(spListItem, item));
+								});
+							}
+							return results;
+						});
+					};
+
 					this.executeRestQuery = function (options) {
 						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists/GetByTitle('" + spListItem.prototype.listName + "')/Items";
 
@@ -211,7 +241,8 @@
 							url: requestURI,
 							headers: {
 								"accept": "application/json;odata=verbose",
-								"content-Type": "application/json;odata=verbose"
+								"content-Type": "application/json;odata=verbose",
+								"X-RequestDigest": RequestDigestCacheService.get(spListItem.prototype.siteUrl)
 							},
 							params: {
 								'$select': params.$select,
