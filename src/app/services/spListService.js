@@ -5,8 +5,8 @@
 	'use strict';
 
 	angular.module('angular.sp.list')
-		.factory('spListService', ['$http', '$q', '_', 'RequestDigestIntervalService', 'RequestDigestCacheService',
-			function ($http, $q, _, RequestDigestIntervalService, RequestDigestCacheService) {
+		.factory('spListService', ['$http', '$q', '_', 'RequestDigestIntervalService', 'RequestDigestCacheService', 'spFieldTypes', 'spBuiltInFieldNames',
+			function ($http, $q, _, RequestDigestIntervalService, RequestDigestCacheService, spFieldTypes, spBuiltInFieldNames) {
 
 				function spListService(spListItem) {
 
@@ -15,20 +15,24 @@
 					//start maintaining a request digest for this site in case they have to post
 					RequestDigestIntervalService.start(spListItem.prototype.siteUrl);
 
+					//convenience function to select list items from this list using a $filter
 					this.getByFilter = function (filter, select) {
 						return this.executeRestQuery(null, select, filter, null);
 					};
 
 					this.getByFilters = this.getByFilter;
 
+					//gets all list items from this list using the default view
 					this.get = function () {
 						return this.executeRestQuery(null, null, null, null);
 					};
 
+					//gets a list item by its id
 					this.getById = function (id) {
 						return this.getByArrayOfIds([id]);
 					};
 
+					//get list items from this list by an array of list item ids
 					this.getByArrayOfIds = function (idArray) {
 						var valueArray = [];
 
@@ -40,6 +44,78 @@
 						return this.executeCamlQuery(query);
 					};
 
+					//creates this list with the columns from the model
+					this.provisionList = function() {
+
+						var requestHeaders = {
+							"accept": "application/json;odata=verbose",
+							"X-RequestDigest": RequestDigestCacheService.get(spListItem.prototype.siteUrl),
+							"content-type": "application/json;odata=verbose",
+							"If-Match": "*",
+							"X-HTTP-Method": "POST"
+						};
+						var data = {
+							__metadata: { "type": "SP.List" },
+							"AllowContentTypes": true,
+							"BaseTemplate": 100,
+							"ContentTypesEnabled": true,
+							"Description": "",
+							"Title":  spListItem.prototype.listName
+						};
+						data = angular.extend({}, item, data);
+
+						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists";
+						var requestBody = JSON.stringify(data);
+
+						return $http({
+							method: 'POST',
+							url: requestURI,
+							contentType: "application/json;odata=verbose",
+							data: requestBody,
+							headers: requestHeaders
+						}).then(function (response) {
+							_.each(spListItem.prototype.spServicesJsonMapping, function(mapping, key){
+								if( spBuiltInFieldNames[key] ) {
+									//if this is a built-in field name, don't try to provision it
+								}
+								else {
+									svc.provisionField(mapping.mappedName, spFieldTypes[mapping.objectType]);
+								}
+							});
+						});
+					};
+
+					//adds a column to this sharepoint list
+					this.provisionField = function(title, type) {
+						var requestHeaders = {
+							"accept": "application/json;odata=verbose",
+							"X-RequestDigest": RequestDigestCacheService.get(spListItem.prototype.siteUrl),
+							"content-type": "application/json;odata=verbose",
+							"If-Match": "*",
+							"X-HTTP-Method": "POST"
+						};
+						var data = {
+							__metadata: { "type": "SP.Field" },
+							"Title": title,
+							"FieldTypeKind": type
+						};
+						data = angular.extend({}, item, data);
+
+						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists/GetByTitle('" + spListItem.prototype.listName + "')/Fields";
+						var requestBody = JSON.stringify(data);
+
+						return $http({
+							method: 'POST',
+							url: requestURI,
+							contentType: "application/json;odata=verbose",
+							data: requestBody,
+							headers: requestHeaders
+						}).then(function (response) {
+							return response;
+						});
+					};
+
+					//creates an item in this list
 					this.create = function (item) {
 
 						item = new spListItem(item);
@@ -70,7 +146,8 @@
 							return response.data.d;
 						});
 					};
-
+					
+					//updates an existing item in this list
 					this.update = function (item) {
 
 						item = new spListItem(item);
@@ -100,6 +177,7 @@
 						});
 					};
 
+					//deletes an item from this list
 					this.remove = function (item) {
 
 						item = new spListItem(item);
@@ -129,6 +207,7 @@
 						});
 					};
 
+					//executes a caml query on this list
 					this.executeCamlQuery = function (query) {
 
 						var requestURI = spListItem.prototype.siteUrl + "/_vti_bin/Lists.asmx";
@@ -168,6 +247,7 @@
 
 					};
 
+					//executes a rest query to this list
 					this.executeRestQuery = function (top, select, filter, expand) {
 						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists/GetByTitle('" + spListItem.prototype.listName + "')/Items";
 
