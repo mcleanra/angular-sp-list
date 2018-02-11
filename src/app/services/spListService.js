@@ -84,6 +84,7 @@
 									svc.provisionField(mapping.mappedName, spFieldTypes[mapping.objectType]);
 								}
 							});
+							return response;
 						});
 					};
 
