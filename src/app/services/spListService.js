@@ -11,6 +11,7 @@
 				function spListService(spListItem) {
 
 					this.spListItem = spListItem;
+					this.spListItem.spListService = this;
 
 					//start maintaining a request digest for this site in case they have to post
 					RequestDigestIntervalService.start(spListItem.prototype.siteUrl);
@@ -56,9 +57,9 @@
 							"X-HTTP-Method": "POST"
 						};
 						var data = {
-							__metadata: { "type": "SP.Field" },
+							__metadata: { "type": "SP.Field" + type },
 							"Title": title,
-							"FieldTypeKind": type
+							"FieldTypeKind": spFieldTypes[type]
 						};
 						data = angular.extend({}, data);
 
@@ -74,6 +75,25 @@
 						}).then(function (response) {
 							return response;
 						});
+					};
+
+					//provisions all the fields that are in this list's spServicesJsonMappings
+					this.provisionAllFields = function(){
+						var fieldMappings = spListItem.prototype.spServicesJsonMapping;
+						for( var fieldName in fieldMappings) {
+
+							var currentField = fieldMappings[fieldName];
+
+							if( spBuiltInFieldNames[fieldName] ) {
+								//if this is a built-in field name, don't try to provision it
+							}
+							else {
+								spListItem.spListService.provisionField(currentField.mappedName, currentField.objectType)
+								.catch(function(){
+
+								});
+							}
+						}
 					};
 
 					//creates this list with the columns from the model
@@ -105,17 +125,11 @@
 							contentType: "application/json;odata=verbose",
 							data: requestBody,
 							headers: requestHeaders
-						}).then(function (response) {
-							_.each(spListItem.prototype.spServicesJsonMapping, function(mapping, key){
-								if( spBuiltInFieldNames[key] ) {
-									//if this is a built-in field name, don't try to provision it
-								}
-								else {
-									provisionField(mapping.mappedName, spFieldTypes[mapping.objectType]);
-								}
-							});
+						})
+						.then(function (response) {
 							return response;
-						});
+						})
+						.finally(this.provisionAllFields);
 					};
 
 					//creates an item in this list
