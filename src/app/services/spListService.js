@@ -15,16 +15,18 @@
 					//start maintaining a request digest for this site in case they have to post
 					RequestDigestIntervalService.start(spListItem.prototype.siteUrl);
 
-					//convenience function to select list items from this list using a $filter
-					this.getByFilter = function (filter, select) {
-						return this.executeRestQuery(null, select, filter, null);
+					this.getByFilter = function (filter, options) {
+						var params = {
+							$filter: filter
+						};
+						options = angular.extend({}, options, params);
+						return this.executeRestQuery(options);
 					};
 
 					this.getByFilters = this.getByFilter;
 
-					//gets all list items from this list using the default view
-					this.get = function () {
-						return this.executeRestQuery(null, null, null, null);
+					this.get = function (options) {
+						return this.executeRestQuery(options);
 					};
 
 					//gets a list item by its id
@@ -247,9 +249,10 @@
 
 					};
 
-					//executes a rest query to this list
-					this.executeRestQuery = function (top, select, filter, expand) {
+					this.executeRestQuery = function (options) {
 						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists/GetByTitle('" + spListItem.prototype.listName + "')/Items";
+
+						var params = angular.extend({}, options);
 
 						return $http({
 							method: 'GET',
@@ -259,10 +262,12 @@
 								"content-Type": "application/json;odata=verbose"
 							},
 							params: {
-								'$top': top || 100000,
-								'$select': select,
-								'$filter': filter,
-								'$expand': expand
+								'$select': params.$select,
+								'$filter': params.$filter,
+								'$skip': params.$skip,
+								'$top': params.$top,
+								'$expand': params.$expand,
+								'$orderby': parmas.$orderby
 							}
 						})
 							.then(function (response) {
