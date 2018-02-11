@@ -64,7 +64,7 @@
 							"Description": "",
 							"Title":  spListItem.prototype.listName
 						};
-						data = angular.extend({}, item, data);
+						data = angular.extend({}, data);
 
 						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists";
 						var requestBody = JSON.stringify(data);
@@ -102,7 +102,7 @@
 							"Title": title,
 							"FieldTypeKind": type
 						};
-						data = angular.extend({}, item, data);
+						data = angular.extend({}, data);
 
 						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists/GetByTitle('" + spListItem.prototype.listName + "')/Fields";
 						var requestBody = JSON.stringify(data);
