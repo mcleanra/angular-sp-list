@@ -1,6 +1,6 @@
 {
   "name": "angular-sp-list",
-  "version": "3.0.8",
+  "version": "4.0.0",
   "description": "An AngularJS module that abstracts CRUD operations for lists in Sharepoint 2013",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,6 +25,6 @@
     "dist"
   ],
   "dependencies": {
-    "angular-sp-digest": "^3.0.2"
+    "angular-sp-digest": "^3.0.3"
   }
 }
