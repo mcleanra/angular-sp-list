@@ -399,6 +399,36 @@
 						return this.executeCamlQuery(query);
 					};
 
+					//adds a column to this sharepoint list
+					this.provisionField = function(title, type) {
+						var requestHeaders = {
+							"accept": "application/json;odata=verbose",
+							"X-RequestDigest": RequestDigestCacheService.get(spListItem.prototype.siteUrl),
+							"content-type": "application/json;odata=verbose",
+							"If-Match": "*",
+							"X-HTTP-Method": "POST"
+						};
+						var data = {
+							__metadata: { "type": "SP.Field" },
+							"Title": title,
+							"FieldTypeKind": type
+						};
+						data = angular.extend({}, data);
+
+						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists/GetByTitle('" + spListItem.prototype.listName + "')/Fields";
+						var requestBody = JSON.stringify(data);
+
+						return $http({
+							method: 'POST',
+							url: requestURI,
+							contentType: "application/json;odata=verbose",
+							data: requestBody,
+							headers: requestHeaders
+						}).then(function (response) {
+							return response;
+						});
+					};
+
 					//creates this list with the columns from the model
 					this.provisionList = function() {
 
@@ -434,39 +464,9 @@
 									//if this is a built-in field name, don't try to provision it
 								}
 								else {
-									this.provisionField(mapping.mappedName, spFieldTypes[mapping.objectType]);
+									provisionField(mapping.mappedName, spFieldTypes[mapping.objectType]);
 								}
 							});
-							return response;
-						});
-					};
-
-					//adds a column to this sharepoint list
-					this.provisionField = function(title, type) {
-						var requestHeaders = {
-							"accept": "application/json;odata=verbose",
-							"X-RequestDigest": RequestDigestCacheService.get(spListItem.prototype.siteUrl),
-							"content-type": "application/json;odata=verbose",
-							"If-Match": "*",
-							"X-HTTP-Method": "POST"
-						};
-						var data = {
-							__metadata: { "type": "SP.Field" },
-							"Title": title,
-							"FieldTypeKind": type
-						};
-						data = angular.extend({}, data);
-
-						var requestURI = spListItem.prototype.siteUrl + "/_api/web/lists/GetByTitle('" + spListItem.prototype.listName + "')/Fields";
-						var requestBody = JSON.stringify(data);
-
-						return $http({
-							method: 'POST',
-							url: requestURI,
-							contentType: "application/json;odata=verbose",
-							data: requestBody,
-							headers: requestHeaders
-						}).then(function (response) {
 							return response;
 						});
 					};

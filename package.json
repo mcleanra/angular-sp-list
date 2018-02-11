@@ -1,6 +1,6 @@
 {
   "name": "angular-sp-list",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "An AngularJS module that abstracts CRUD operations for lists in Sharepoint 2013",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
