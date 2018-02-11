@@ -81,7 +81,7 @@
 									//if this is a built-in field name, don't try to provision it
 								}
 								else {
-									svc.provisionField(mapping.mappedName, spFieldTypes[mapping.objectType]);
+									this.provisionField(mapping.mappedName, spFieldTypes[mapping.objectType]);
 								}
 							});
 							return response;
